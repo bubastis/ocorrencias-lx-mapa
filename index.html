@@ -9,12 +9,10 @@
         <title>Ocorrências em Lisboa</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@300;400;700&display=swap" rel="stylesheet">
         <script src='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
         <link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
         <link rel="stylesheet" type="text/css" href="local.css"/> 
-
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -22,14 +20,62 @@
         <![endif]-->
 
         <div class='sidebar'>
-            <div class='heading'>
-              <h1>Na Minha Rua<sup>v2</sup></h1>
+
+            <div class='header'>
+                <h1>Na Minha Rua<sup>v2</sup></h1>
+
+                <select name="picker" id="picker">
+                    <option selected>Filtrar</option>
+                    <option value="Ajuda">Freguesia: Ajuda</option>
+                    <option value="Alcântara">Freguesia: Alcântara</option>
+                    <option value="Alvalade">Freguesia: Alvalade</option>
+                    <option value="Areeiro">Freguesia: Areeiro</option>
+                    <option value="Arroios">Freguesia: Arroios</option>
+                    <option value="Avenidas Novas">Freguesia: Avenidas Novas</option>
+                    <option value="Beato">Freguesia: Beato</option>
+                    <option value="Belém">Freguesia: Belém</option>
+                    <option value="Benfica">Freguesia: Benfica</option>
+                    <option value="Campo de Ourique">Freguesia: Campo de Ourique</option>
+                    <option value="Campolide">Freguesia: Campolide</option>
+                    <option value="Carnide">Freguesia: Carnide</option>
+                    <option value="Estrela">Freguesia: Estrela</option>
+                    <option value="Lumiar">Freguesia: Lumiar</option>
+                    <option value="Marvila">Freguesia: Marvila</option>
+                    <option value="Misericórdia">Freguesia: Misericórdia</option>
+                    <option value="Olivais">Freguesia: Olivais</option>
+                    <option value="Parque das Nações">Freguesia: Parque das Nações</option>
+                    <option value="Penha de França">Freguesia: Penha de França</option>
+                    <option value="Santa Clara">Freguesia: Santa Clara</option>
+                    <option value="Santa Maria Maior">Freguesia: Santa Maria Maior</option>
+                    <option value="Santo António">Freguesia: Santo António</option>
+                    <option value="São Domingos de Benfica">Freguesia: São Domingos de Benfica</option>
+                    <option value="São Vicente">Freguesia: São Vicente</option>
+                    <option value="Animais em Ambiente Urbano">Tipo: Animais em Ambiente Urbano</option>
+                    <option value="Árvores e Espaços Verdes">Tipo: Árvores e Espaços Verdes</option>
+                    <option value="Equipamentos Municipais - Cultura">Tipo: Equipamentos Municipais - Cultura</option>
+                    <option value="Equipamentos Municipais - Desporto">Tipo: Equipamentos Municipais - Desporto</option>
+                    <option value="Equipamentos Municipais - Educação">Tipo: Equipamentos Municipais - Educação</option>
+                    <option value="Equipamentos Municipais - Sanitários">Tipo: Equipamentos Municipais - Sanitários</option>
+                    <option value="Estradas e Sinalização">Tipo: Estradas e Sinalização</option>
+                    <option value="Habitação Municipal">Tipo: Habitação Municipal</option>
+                    <option value="Higiene Urbana">Tipo: Higiene Urbana</option>
+                    <option value="Iluminação Pública">Tipo: Iluminação Pública</option>
+                    <option value="Passeios e Acessibilidades">Tipo: Passeios e Acessibilidades</option>
+                    <option value="Saneamento">Tipo: Saneamento</option>
+                    <option value="Segurança Pública e Ruído">Tipo: Segurança Pública e Ruído</option>
+                </select>
+
             </div>
-            <div id='listings' class='listings'></div>
+
+            <div id='listings' class='listings'>
+                <span id="empty"></span>
+            </div>
+            
         </div>
 
-        <div id="map" class="map pad2"></div>
+        <div id="map" class="map"></div>
 
         <script src="local.js" async defer></script>
+
     </body>
 </html>
