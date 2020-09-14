@@ -9,6 +9,37 @@ var map = new mapboxgl.Map({
     center: [-9.162,38.724]
   });
 
+const listings = document.getElementById('listings');
+const scrollToTopButton = document.getElementById('scrollTop');
+
+const scrollFunc = () => {
+
+  let y = window.scrollY;
+  let h = window.innerHeight;
+  let l = listings.scrollTop;
+
+  if (l > h) {
+    scrollToTopButton.style.display = "block";
+  } else {
+    scrollToTopButton.style.display = "none";
+  }
+};
+
+listings.addEventListener("scroll", scrollFunc);
+
+const scrollToTop = () => {
+  const c = listings.scrollTop;
+  if (c > 0) {
+    window.requestAnimationFrame(scrollToTop);
+    listings.scrollTo(0, c - c / 10);
+  }
+};
+
+scrollToTopButton.onclick = function(e) {
+  e.preventDefault();
+  scrollToTop();
+}
+
 function getData (){
     fetch('https://gisapps.cm-lisboa.pt/arcgisapps/rest/services/GOPI_Maps_Secure/NaMinhaRuaRead_PROD/MapServer/0/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=id%2Cnumero%2Crequerente%2Cemail%2Clocal%2Creferencia%2Cdescricao%2Ctipo%2Carea%2Cfreg_descricao%2Cstate&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=id+DESC&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=500&queryByDistance=&returnExtentsOnly=false&datumTransformation=&parameterValues=&rangeValues=&f=geojson')
     .then(response => response.json())
@@ -93,19 +124,30 @@ function getData (){
 
            listing.addEventListener('click', function(e){
 
+            if(this.classList.contains('active')) {
+              switchActives();
+              map.flyTo({
+                center: [-9.162,38.724],
+                zoom: 12.56
+              });
+              var popup = document.getElementsByClassName('mapboxgl-popup');
+              if ( popup.length ) {
+                  popup[0].remove();
+              }
+            }
+            else {
                 getTo(el);
                 switchActives();
                 this.classList.add('active');
                 createPopUp(el);
+            }
             });
 
         });
 
         map.on('click', function(e) {
 
-            var features = map.queryRenderedFeatures(e.point, {
-              layers: ['lx']
-            });
+            var features = map.queryRenderedFeatures(e.point, {layers: ['lx']});
 
             if (features.length) {
               var clickedPoint = features[0];
@@ -186,7 +228,6 @@ function createPopUp(currentFeature) {
       .addTo(map);
 
     var closeButton = document.getElementsByClassName('mapboxgl-popup-close-button');
-    console.log(closeButton)
     closeButton[0].addEventListener('click', function() {
         switchActives();
     })
