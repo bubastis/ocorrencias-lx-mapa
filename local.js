@@ -132,12 +132,24 @@ function getData (){
                     cards.forEach(el => {el.style.display = "block";}) // reset
                     cardsFiltered = cards.filter((item) => !item.textContent.includes(search));
                     cardsFiltered.forEach(el => {el.style.display = "none";})
+                    var bounds = new mapboxgl.LngLatBounds();
+                    let filteredRecords;
 
                     if (this.options[this.selectedIndex].text.includes("Tipo")) {
                         map.setFilter('lx', ['==', ['get', 'area'], search]);
+                        filteredRecords = allRecords.features.filter((item) => item.properties.area.includes(search));
+                        if (filteredRecords.length > 0) {
+                          filteredRecords.forEach (feature => bounds.extend(feature.geometry.coordinates))
+                          map.fitBounds(bounds, {padding: 50});
+                        }
                     }
                     else {
                         map.setFilter('lx', ['==', ['get', 'freg_descricao'], search]);
+                        filteredRecords = allRecords.features.filter((item) => item.properties.freg_descricao.includes(search));
+                        if (filteredRecords.length > 0) {
+                          filteredRecords.forEach (feature => bounds.extend(feature.geometry.coordinates))
+                          map.fitBounds(bounds, {padding: 50});
+                        }
                     }
                     if (cardsFiltered.length == 500) {
                         document.getElementById("empty").textContent = "Sem resultados 😥";    
@@ -146,6 +158,10 @@ function getData (){
                 else {
                     cards.forEach(el => {el.style.display = "block";})
                     map.setFilter('lx', null);
+                    map.flyTo({
+                      center: [-9.162,38.724],
+                      zoom: 12.56
+                    });
 
             }
         }); 
