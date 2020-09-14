@@ -126,10 +126,13 @@ function getData (){
 
             if(this.classList.contains('active')) {
               switchActives();
-              map.flyTo({
-                center: [-9.162,38.724],
-                zoom: 12.56
-              });
+              console.log(document.getElementById("picker").value);
+              if(document.getElementById("picker").value == "Filtrar") {
+                map.flyTo({
+                  center: [-9.162,38.724],
+                  zoom: 12.56
+                });
+              }
               var popup = document.getElementsByClassName('mapboxgl-popup');
               if ( popup.length ) {
                   popup[0].remove();

@@ -121,21 +121,6 @@ span#empty {
     color: white;
     position: absolute;
 }
-
-button {
-    width: 20%;
-    border: none;
-    border-radius: .3rem;
-    height: 2rem;
-    padding: .5rem;
-    display: inline-block;
-    font-family: 'Kumbh Sans', Helvetica, Arial, Sans-serif;
-    outline: none;
-    background: #4a5354;
-    color: white;
-    font-weight: 900;
-    margin-right: .2rem;
-}
 span#scrollTop {
     background: #111a1f;
     font-size: .8rem;
