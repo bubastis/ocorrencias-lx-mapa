@@ -137,3 +137,8 @@ span#scrollTop {
 #scrollTop:hover {
     color:white;
 }
+
+@media only screen and (max-width: 800px) {
+    .header {height: 8rem;}
+    #listings {top: 8rem;}
+  }
