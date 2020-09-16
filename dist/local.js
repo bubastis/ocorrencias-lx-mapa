@@ -25,10 +25,10 @@ fetchData().then(records => {
 function buildMap(records) {
 
     var nav = new mapboxgl.NavigationControl();
-    var scale = new mapboxgl.ScaleControl({maxWidth: 100, unit: 'metric'});
+    // var scale = new mapboxgl.ScaleControl({maxWidth: 100, unit: 'metric'});
 
     map.addControl(nav, 'top-right');
-    map.addControl(scale, 'bottom-right');
+    // map.addControl(scale, 'bottom-right');
 
     map.addSource('lx-arcgis', {
       type: 'geojson',
@@ -105,7 +105,7 @@ function buildListCards(records) {
     }    
 
     var ref = listing.appendChild(document.createElement('h2'));
-    ref.innerHTML = 'Ocorrência nº' + prop.id;
+    ref.innerHTML = 'Ocorrência n.º' + prop.id;
 
     var freguesia = listing.appendChild(document.createElement('div'));
     freguesia.innerHTML = '<span>Freguesia</span>' + prop.freg_descricao;
@@ -210,7 +210,7 @@ function createPopUp(currentFeature) {
   
     var popup = new mapboxgl.Popup({ closeOnClick: false })
       .setLngLat(currentFeature.geometry.coordinates)
-      .setHTML('<h1>Ocorrência nº' + currentFeature.properties.id + '</h1><p>"' + currentFeature.properties.descricao + '"</p>')
+      .setHTML('<h1>Ocorrência n.º' + currentFeature.properties.id + '</h1><p>"' + currentFeature.properties.descricao + '"</p>')
       .addTo(map);
 
     var closeButton = document.getElementsByClassName('mapboxgl-popup-close-button');
