@@ -1,4 +1,4 @@
-![App Preview](https://raw.githubusercontent.com/bubastis/ocorrencias-lx-mapa/master/preview.png?token=AF7VKIQ2B3WJ5GUMMNGSSOS7L2YN4)
+![App Preview](preview.png)
 
 ## O que é?
 
