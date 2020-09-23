@@ -12,6 +12,7 @@
         <script src='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
         <link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
         <link rel="stylesheet" type="text/css" href="local.css"/> 
+        <link rel="apple-touch-icon" href="ios_icon.png">
         <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@300;400;700&display=swap" rel="stylesheet">
     </head>
     <body>
@@ -19,54 +20,74 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        <div class='sidebar'>
+        <div id="myModal" class="modal">
 
-            <div class='header'>
-                <h1>Na Minha Rua<sup>v2</sup></h1>
+            <!-- Modal content -->
+            <div class="modal-content">
+            <span class="close">&times;</span>
+                <h2>O que é este site?</h2>
+                <p>O <strong>na minha rua<sup>v2</sup></strong> é um interface que pretende tornar mais amigável a navegação 
+                    das ocorrências submetidas no portal <a href="https://naminharualx.cm-lisboa.pt/">Na Minha Rua</a>, operado pela Câmara Municipal de Lisboa.</p>
+                <p>O portal registou já cerca de 35.000 ocorrências, mas este website apenas utiliza as últimas 500, de modo a não
+                    sobrecarregar a API pública. As ocorrências podem ser filtradas por Tipo e Freguesia, e estão
+                coloridas de acordo com o seu Estado de Execução: <span class="execucao">em execução</span> , <span class="analise">em análise</span>,
+                 <span class="resolucao">registado para resolução</span>, ou <span class="resolvido">resolvido</span>.</p>
+                <p>Este website funciona com o <a href="https://docs.mapbox.com/mapbox-gl-js/api/" target="_blank">Mapbox GL JS</a> e está alojado no <a href="https://github.com/bubastis/ocorrencias-lx-mapa" target="_blank">GitHub</a>.</p>
+            </div>
+          
+          </div>
+        
+        <div id='sidebar'>
+
+            <div id='header'>
+                <h1 id="heading">Na Minha Rua<sup>v2</sup></h1>
+                <svg id="modalBringer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="white">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                </svg>
 
                 <!-- <button>500</button> -->
-
-                <select name="picker" id="picker">
-                    <option selected>Filtrar</option>
-                    <option value="Ajuda">Freguesia: Ajuda</option>
-                    <option value="Alcântara">Freguesia: Alcântara</option>
-                    <option value="Alvalade">Freguesia: Alvalade</option>
-                    <option value="Areeiro">Freguesia: Areeiro</option>
-                    <option value="Arroios">Freguesia: Arroios</option>
-                    <option value="Avenidas Novas">Freguesia: Avenidas Novas</option>
-                    <option value="Beato">Freguesia: Beato</option>
-                    <option value="Belém">Freguesia: Belém</option>
-                    <option value="Benfica">Freguesia: Benfica</option>
-                    <option value="Campo de Ourique">Freguesia: Campo de Ourique</option>
-                    <option value="Campolide">Freguesia: Campolide</option>
-                    <option value="Carnide">Freguesia: Carnide</option>
-                    <option value="Estrela">Freguesia: Estrela</option>
-                    <option value="Lumiar">Freguesia: Lumiar</option>
-                    <option value="Marvila">Freguesia: Marvila</option>
-                    <option value="Misericórdia">Freguesia: Misericórdia</option>
-                    <option value="Olivais">Freguesia: Olivais</option>
-                    <option value="Parque das Nações">Freguesia: Parque das Nações</option>
-                    <option value="Penha de França">Freguesia: Penha de França</option>
-                    <option value="Santa Clara">Freguesia: Santa Clara</option>
-                    <option value="Santa Maria Maior">Freguesia: Santa Maria Maior</option>
-                    <option value="Santo António">Freguesia: Santo António</option>
-                    <option value="São Domingos de Benfica">Freguesia: São Domingos de Benfica</option>
-                    <option value="São Vicente">Freguesia: São Vicente</option>
-                    <option value="Animais em Ambiente Urbano">Tipo: Animais em Ambiente Urbano</option>
-                    <option value="Árvores e Espaços Verdes">Tipo: Árvores e Espaços Verdes</option>
-                    <option value="Equipamentos Municipais - Cultura">Tipo: Equipamentos Municipais - Cultura</option>
-                    <option value="Equipamentos Municipais - Desporto">Tipo: Equipamentos Municipais - Desporto</option>
-                    <option value="Equipamentos Municipais - Educação">Tipo: Equipamentos Municipais - Educação</option>
-                    <option value="Equipamentos Municipais - Sanitários">Tipo: Equipamentos Municipais - Sanitários</option>
-                    <option value="Estradas e Sinalização">Tipo: Estradas e Sinalização</option>
-                    <option value="Habitação Municipal">Tipo: Habitação Municipal</option>
-                    <option value="Higiene Urbana">Tipo: Higiene Urbana</option>
-                    <option value="Iluminação Pública">Tipo: Iluminação Pública</option>
-                    <option value="Passeios e Acessibilidades">Tipo: Passeios e Acessibilidades</option>
-                    <option value="Saneamento">Tipo: Saneamento</option>
-                    <option value="Segurança Pública e Ruído">Tipo: Segurança Pública e Ruído</option>
-                </select>
-
+                <div id ="selector">
+                    <select name="picker" id="picker">
+                        <option selected>Filtrar</option>
+                        <option value="Ajuda">Freguesia: Ajuda</option>
+                        <option value="Alcântara">Freguesia: Alcântara</option>
+                        <option value="Alvalade">Freguesia: Alvalade</option>
+                        <option value="Areeiro">Freguesia: Areeiro</option>
+                        <option value="Arroios">Freguesia: Arroios</option>
+                        <option value="Avenidas Novas">Freguesia: Avenidas Novas</option>
+                        <option value="Beato">Freguesia: Beato</option>
+                        <option value="Belém">Freguesia: Belém</option>
+                        <option value="Benfica">Freguesia: Benfica</option>
+                        <option value="Campo de Ourique">Freguesia: Campo de Ourique</option>
+                        <option value="Campolide">Freguesia: Campolide</option>
+                        <option value="Carnide">Freguesia: Carnide</option>
+                        <option value="Estrela">Freguesia: Estrela</option>
+                        <option value="Lumiar">Freguesia: Lumiar</option>
+                        <option value="Marvila">Freguesia: Marvila</option>
+                        <option value="Misericórdia">Freguesia: Misericórdia</option>
+                        <option value="Olivais">Freguesia: Olivais</option>
+                        <option value="Parque das Nações">Freguesia: Parque das Nações</option>
+                        <option value="Penha de França">Freguesia: Penha de França</option>
+                        <option value="Santa Clara">Freguesia: Santa Clara</option>
+                        <option value="Santa Maria Maior">Freguesia: Santa Maria Maior</option>
+                        <option value="Santo António">Freguesia: Santo António</option>
+                        <option value="São Domingos de Benfica">Freguesia: São Domingos de Benfica</option>
+                        <option value="São Vicente">Freguesia: São Vicente</option>
+                        <option value="Animais em Ambiente Urbano">Tipo: Animais em Ambiente Urbano</option>
+                        <option value="Árvores e Espaços Verdes">Tipo: Árvores e Espaços Verdes</option>
+                        <option value="Equipamentos Municipais - Cultura">Tipo: Equipamentos Municipais - Cultura</option>
+                        <option value="Equipamentos Municipais - Desporto">Tipo: Equipamentos Municipais - Desporto</option>
+                        <option value="Equipamentos Municipais - Educação">Tipo: Equipamentos Municipais - Educação</option>
+                        <option value="Equipamentos Municipais - Sanitários">Tipo: Equipamentos Municipais - Sanitários</option>
+                        <option value="Estradas e Sinalização">Tipo: Estradas e Sinalização</option>
+                        <option value="Habitação Municipal">Tipo: Habitação Municipal</option>
+                        <option value="Higiene Urbana">Tipo: Higiene Urbana</option>
+                        <option value="Iluminação Pública">Tipo: Iluminação Pública</option>
+                        <option value="Passeios e Acessibilidades">Tipo: Passeios e Acessibilidades</option>
+                        <option value="Saneamento">Tipo: Saneamento</option>
+                        <option value="Segurança Pública e Ruído">Tipo: Segurança Pública e Ruído</option>
+                    </select>
+                </div>
             </div>
 
             <div id='listings' class='listings'>
@@ -74,9 +95,13 @@
             </div>
             <span id="scrollTop">Voltar ao topo</span>
         </div>
-
+        
         <div id="map" class="map mapboxgl-map">
         </div>
+
+
+
+
 
         <script src="local.js"></script>
 
