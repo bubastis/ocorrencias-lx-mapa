@@ -1,15 +1,13 @@
 html {
     box-sizing: border-box;
     font-size: 100%;
-  }
-  *, *:before, *:after {
+}
+*, *:before, *:after {
     box-sizing: inherit;
-  }
-
+}
 a {
     color: black;
 }
-  
 body {
     color: black;
     font-family: 'Kumbh Sans', Helvetica, Arial, Sans-serif;
@@ -18,9 +16,12 @@ body {
     background: #111a1f;
     -webkit-font-smoothing: antialiased;
 }
+
+/* Sidebar */
+
 #sidebar {
     position: absolute;
-    width: 25%;
+    width: 30%;
     height: 100%;
     top: 0;
     left: 0;
@@ -43,12 +44,22 @@ body {
 #header h1 sup {
     font-size: .8rem;
 }
-#header svg {
+span#faq {
+    cursor: pointer;
+}
+span#faq:hover:before,
+span#faq:hover:after {
+    opacity: .8;
+}
+#faq:after {
     width: 20px;
     height: 20px;
     position: absolute;
-    right: 1rem;
-    top: 1rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath fill-rule='evenodd' d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z' clip-rule='evenodd' /%3E%3C/svg%3E");
+    color: transparent;
+    content: '.';
+    right: .6rem;
+    top: 1.3rem;
     opacity: .2;
     cursor: pointer;
 } 
@@ -78,15 +89,19 @@ select {
     height: 100%;
     overflow: auto;
     position: fixed;
-    width: 25%;
+    width: 30%;
+    display: flex;
+    padding: 0 0 8.5rem .5rem;
+    flex-flow: wrap;
 }
 .card {
     padding: 1rem .75rem;
-    margin: 0rem .5rem .5rem .5rem;
+    margin: 0rem .5rem .5rem 0rem;
     border-radius:.3rem;
     background: #f5f5f5;
     cursor: pointer;
     font-size: .9rem;
+    width: calc(50% - .5rem);
 }
 .card h2 {
     font-size: 1.1rem;
@@ -99,56 +114,34 @@ select {
 .card:hover {
     transform:scale(1.02)
 }
-.card span:before {
-    opacity:.5;
-    margin-right:.4rem;
-    text-transform: uppercase;
-    font-weight: 600;
-    display:inline-block;
+.card span {
+    display: block;
+    font-size: .8rem;
+    opacity: .8;
+    padding-left:15px;
 }
-.card span.tipo:before {
-    content: 'Tipo';
+.card span:before {
+    content: '.';
+    color: transparent;
+    width: 11px;
+    height: 11px;
+    margin-right: 4px;
+    opacity: inherit;
+    vertical-align: text-top;
+    display: inline-block;
+    margin-left: -15px;
 }
 .card span.freg:before {
-    content: 'Freguesia';
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z' clip-rule='evenodd' /%3E%3C/svg%3E");
+}
+.card span.tipo:before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01' /%3E%3C/svg%3E");
 }
 .card.active {opacity: .5}
 .execucao {background: #ffc105;} 
 .resolucao {background: #ff7907;}
 .analise {background: #35aedc;}  
 .resolvido {background: #28a745;}
-
-.map,
-.mapboxgl-map {
-    position: absolute;
-    left: 25%;
-    width: 75%;
-    top: 0;
-    bottom: 0;
-    outline: none;
-}
-canvas {
-    outline: none;
-}
-.mapboxgl-popup-content {
-    border-radius: .5rem;
-    font-family: 'Kumbh Sans', Helvetica, Arial, Sans-serif;
-    font-size: .9rem;
-    padding: 1rem;
-}
-.mapboxgl-popup-content h1 {
-    margin: 0rem;
-    font-size: 1.2em;
-    max-width: 95%;
-    display: block;
-}
-.mapboxgl-popup-content p {
-    margin-bottom: 0rem;
-    line-height: 1rem;
-}
-.mapboxgl-popup-close-button {
-    font-size: 1.2rem;
-}
 span#empty {
     margin: 0rem .5rem;
     display: block;
@@ -171,75 +164,128 @@ span#scrollTop {
 #scrollTop:hover {
     color:white;
 }
+
+/* Map */
+
+.map,
+.mapboxgl-map {
+    position: absolute;
+    left: 30%;
+    width: 70%;
+    top: 0;
+    bottom: 0;
+    outline: none;
+}
+canvas {
+    outline: none;
+}
+.mapboxgl-popup-content {
+    border-radius: .5rem;
+    font-family: 'Kumbh Sans', Helvetica, Arial, Sans-serif;
+    font-size: .9rem;
+    padding: 1rem;
+    min-width: 300px;
+}
+.mapboxgl-popup-content h1 {
+    margin: 0rem;
+    font-size: 1.2em;
+    max-width: 95%;
+    display: block;
+}
+.mapboxgl-popup-content p {
+    margin-bottom: 0rem;
+    line-height: 1rem;
+}
+.mapboxgl-popup-close-button {
+    font-size: 1.2rem;
+}
 /* Modal */
 
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 10; /* Sit on top */
+    display: none;
+    position: fixed; 
+    z-index: 10; 
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
-  }
-  
-  /* Modal Content/Box */
-  .modal-content {
+    width: 100%;
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.6); 
+}
+.modal-content {
     background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
+    margin: 15% auto; 
     padding: 1rem;
-    width: 40%; /* Could be more or less, depending on screen size */
+    width: 40%; 
     line-height:1.2rem;
     border-radius: .5rem;
-  }
-  .modal-content h2 {
+}
+.modal-content h2 {
     margin-top:0;
-  }
-  .modal-content p {
+}
+.modal-content p {
     margin-bottom: 0;
-  }
-  .modal-content sup {
+}
+.modal-content sup {
       font-size: .6rem;
-  }
-  #myModal span {
+}
+.modal-content p span {
     padding: 0rem .3rem;
     white-space: nowrap;
     display: inline-block;
     border-radius: .3rem;
-    }
-  
-  /* The Close Button */
-  .close {
+}
+.close {
     opacity:.5;
     font-size: 28px;
     font-weight: bold;
     float: right;
     margin-right: -.5rem;
     margin-top: -.5rem;
-  }
-  
-  .close:hover,
-  .close:focus {
+}
+.close:hover,
+.close:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
-  }
+}
 
-@media only screen and (min-width: 414px) and (max-width: 1024px) {
-    html {
-        font-size: 90%;
+@media only screen and (min-width: 414px) and (max-width: 1280px) {
+
+    #header h1 {
+        padding: 1.2rem .5rem 0.2rem;
     }
-    .mapboxgl-popup-content {
-        padding: initial;
+    #faq:before {
+        content: 'O que é?';
+        font-size: .8rem;
+        opacity: .4;
+        margin: 0rem 0 .6rem;
+        display: inline-block;
+        background: #071217;
+        color: #cccfd0;
+        padding: 0.2rem .8rem;
+        border-radius: 1rem;
+    }
+
+    #faq:after {
+        display: none;
+    }
+    #listings {
+        display: block;
+        padding: 0;
+    }
+    .card {
+        width: auto;
+        display: block;
+        margin: 0rem .5rem .5rem .5rem;
     }
   }
 
 @media only screen and (max-width: 414px) {
     html, body {
         height: 100%;
+        font-size: 90%;
     }
     body {
         min-height: -webkit-fill-available; 
@@ -264,6 +310,9 @@ span#scrollTop {
         opacity: .8;
         text-transform: lowercase;
     }
+    #faq:after {
+        top: .9rem;
+    }
     #selector {
         margin: 0 .5rem;
         opacity: .4;
@@ -281,18 +330,19 @@ span#scrollTop {
         white-space: nowrap;
         position: relative;
         height: auto;
+        display: block;
         padding: .5rem;
         min-height: 25%;
     } 
     #listings:before {
-        box-shadow: inset -25px 0px 5px -15px #00000061;
+        box-shadow: inset -25px 0px 10px -10px #000000d1;
         width: 40px;
-        height: 80px;
+        height: 100%;
         position: fixed;
         right: 0;
-        margin-top: 0rem;
-        content: '&nbsp;';
+        content: '.';
         color: transparent;
+        margin-right:-.5rem;
     }
     #listings #empty {
         position: relative;
@@ -302,6 +352,7 @@ span#scrollTop {
         display: inline-block;
         padding: .5rem;
         margin: 0 .5rem 0 0;
+        width: auto;
     }
     .card h2 {
         margin-bottom: 0.3rem;
@@ -341,9 +392,11 @@ span#scrollTop {
         left: 0;
         top: 0;
     }
+    .mapboxgl-popup-content {
+        min-width: auto;
+    }
     .mapboxgl-popup-close-button {
         font-size: 1rem;
-        right: 0 !important;
-        top: 0 !important;
+        padding: 0 .5rem 0 0;
     }
   }
