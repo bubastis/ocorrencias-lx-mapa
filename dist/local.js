@@ -9,8 +9,8 @@ if (mobileWindow.matches) {
   newZoom = 12;
 }
 else {
-  newCenter = [-9.157307016626419,38.73652089956627]
-  newZoom = 12.56;
+  newCenter = [-9.16638372975865,38.74510547492159]
+  newZoom = 11.85;
 }
 
 var map = new mapboxgl.Map({

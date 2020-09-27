@@ -90,9 +90,11 @@ select {
     overflow: auto;
     position: fixed;
     width: 30%;
+    padding: 0 0 7.5rem .5rem;
     display: flex;
-    padding: 0 0 8.5rem .5rem;
     flex-flow: wrap;
+    flex-direction: row;
+    align-content: end;
 }
 .card {
     padding: 1rem .75rem;
