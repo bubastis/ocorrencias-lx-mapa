@@ -24,7 +24,7 @@ https://ocorrencias-lx.netlify.app
 
 ## Na Minha Rua V2 🇬🇧
 
-## What is it (English)
+### What is it (English)
 
 This website is a interface built in javascript for the [Na Minha Rua](https://naminharualx.cm-lisboa.pt/) [_In My Street_] portal, which is operated by the Lisbon City Hall and enables citizen reporting of problems within public areas. Using a [Netlify function](https://www.netlify.com/products/functions/) adapted from [node-fetch](https://github.com/sanity-io/netlify-cli/blob/master/src/functions-templates/unused_ts/node-fetch/node-fetch.ts), the V2 version fetches the last 500 reports from the public API and lists them on a map that uses [Mapbox GL JS](https://github.com/mapbox/mapbox-gl-js) that loads immediately. By clicking on any marker, the user is presented with a popup with details of the report.
 
