@@ -194,10 +194,10 @@ function buildListCards(records) {
   document.getElementById("mais-occ").addEventListener("click", () => {
     
     if(!mobileWindow.matches) {
-      loadmore.innertext = "A carregar.."
+      loadmore.innerText = "A carregar.."
     }
     else {
-      loadmore.innertext = "A carregar..." 
+      loadmore.innerText = "A carregar..." 
     }
     offset += 500;
     fetch(url + '?offset=' + offset)
