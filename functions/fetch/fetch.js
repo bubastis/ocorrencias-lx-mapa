@@ -1,13 +1,18 @@
 const fetch = require('node-fetch')
 exports.handler = async function(event, context) {
   try {
+    
+    offset = event.queryStringParameters.offset;
+
     const response = await fetch(
       'https://gisapps.cm-lisboa.pt/arcgisapps/rest/services/GOPI_Maps_Secure/NaMinhaRuaRead_PROD/MapServer/0/query?' +
         'where=1%3D1&' + 
-        'outFields=id%2Cnumero%2Crequerente%2Cemail%2Clocal%2Creferencia%2Cdescricao%2Ctipo%2Carea%2Cfreg_descricao%2Cstate&' + 
+        'outFields=id%2Cnumero%2Crequerente%2Cemail%2Clocal%2Creferencia%2Cdescricao%2Ctipo%2Carea%2Cfreg_descricao%2Cstate%2Cgeo_freguesia_id&' + 
         'orderByFields=id+DESC&'+
-        'resultRecordCount=500&' + 
+        'resultRecordCount=500&'+ 
+        (offset != 0 ? "resultOffset=" + offset + "&" : null ) + 
         'f=geojson')
+    
     if (!response.ok) {
       // NOT res.status >= 200 && res.status < 300
       return { statusCode: response.status, body: response.statusText }

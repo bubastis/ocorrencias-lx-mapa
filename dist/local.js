@@ -1,6 +1,9 @@
 let records;
+let moreRecords = {};
+let offset = 0;
+let hover = false;
 
-mapboxgl.accessToken = "pk.eyJ1IjoiZWFzdDE5OTkiLCJhIjoiY2l5dW96ZXZxMDFyMzM4bXl6MDI3M2liOSJ9.zN_d4GPduMmFnsFDYuNnGw";
+// Initialize map
 
 const mobileWindow = window.matchMedia("(max-width: 414px)");
 
@@ -13,26 +16,32 @@ else {
   newZoom = 11.85;
 }
 
-var map = new mapboxgl.Map({
-    style: "mapbox://styles/east1999/ckf10svqy2f0u1an8rsuneco1?optimize=true",
+mapboxgl.accessToken = "pk.eyJ1IjoiZWFzdDE5OTkiLCJhIjoiY2l5dW96ZXZxMDFyMzM4bXl6MDI3M2liOSJ9.zN_d4GPduMmFnsFDYuNnGw";
+
+let map = new mapboxgl.Map({
+    style: "mapbox://styles/east1999/ckf10svqy2f0u1an8rsuneco1",
     container: "map",
     zoom: newZoom,
     center: newCenter
   });
 
+// First fetch
+
+let url = ".netlify/functions/fetch";
+
 async function fetchData() {
-  const response = await fetch(' .netlify/functions/fetch');
+  const response = await fetch(url)
   const records = await response.json();
   return records;
 }
 
 fetchData().then(records => {
   buildListCards(records);
-  buildPicker(records);
-  buildMap(records);
+  Object.assign(moreRecords, records)
+  buildMap(moreRecords);
 })
 
-function buildMap(records) {
+function buildMap(moreRecords) {
 
     if (!mobileWindow.matches) {
       map.addControl(new mapboxgl.NavigationControl(), 'top-right');
@@ -47,16 +56,16 @@ function buildMap(records) {
         'top-right');
     };
 
+  
     map.addSource('lx-arcgis', {
-      type: 'geojson',
-      data: records
+      'type': 'geojson',
+      'data': moreRecords
     });
 
     map.addLayer({
       'id': 'lx',
       'type': 'circle',
       'source': 'lx-arcgis',
-      'minzoom': 8,
       'paint': {
           'circle-radius': {
             stops: [[11, 3], [12.5, 3], [16, 10]]
@@ -79,6 +88,14 @@ function buildMap(records) {
         }
     })
 
+    map.on('mouseenter', 'lx', function(e) {
+      map.getCanvas().style.cursor = 'pointer';
+    });
+
+    map.on('mouseleave', 'lx', function(e) {
+      map.getCanvas().style.cursor = '';
+    })
+
     map.on('click', function(e) {
 
       var features = map.queryRenderedFeatures(e.point, {layers: ['lx']});
@@ -92,14 +109,16 @@ function buildMap(records) {
         listing.classList.add('active');
         listing.scrollIntoView({behavior: 'smooth'});
       }
+      else {
+        var popUps = document.getElementsByClassName('mapboxgl-popup');
+        if (popUps[0]) {popUps[0].remove()};
+        switchActives();
+      }
     });
-
-    map.on('mouseenter', 'lx', function () {
-      map.getCanvas().style.cursor = 'pointer';
-      });
 }
 
 function buildListCards(records) {
+  (document.getElementById("mais-occ") ? document.getElementById("mais-occ").remove() : "")
   records.features.forEach(function(el){
 
     var prop = el.properties;
@@ -157,126 +176,174 @@ function buildListCards(records) {
         }
     })
   })
+
+  // Create fetch more Button
+
+  let loadmore = document.createElement('div');
+  loadmore.id = "mais-occ";
+  if (mobileWindow.matches) {
+    loadmore.innerText = "Mais?";
+  }
+  else {
+    loadmore.innerText = "Mais ocorrências";
+  }
+  listings.appendChild(loadmore);
+
+  // Add fetch more listener
+
+  document.getElementById("mais-occ").addEventListener("click", () => {
+    
+    if(!mobileWindow.matches) {
+      loadmore.innertext = "A carregar.."
+    }
+    else {
+      loadmore.innertext = "A carregar..." 
+    }
+    offset += 500;
+    fetch(url + '?offset=' + offset)
+    .then(response => response.json())
+    .then(data => {
+      data.features.forEach(el => moreRecords.features.push(el))
+      map.getSource("lx-arcgis").setData(moreRecords);
+      buildListCards(data)
+      filterCardsAndMap(data);
+    })
+  })
 }
 
-function buildPicker(records) {
+const picker = document.getElementById("picker");
+picker.addEventListener('change', function(e) {
+  filterCardsAndMap(moreRecords)
+})
 
-  var picker = document.getElementById("picker");
-  picker.addEventListener('change', function(e) {  
+function filterCardsAndMap() {
 
-    let cards = Array.from(document.querySelectorAll(".card"));
-    let cardsFiltered;
-    document.getElementById("empty").textContent = "";
+  // console.log("Checking for filter") Define variables 
 
-        if (this.value != "Filtrar") {
+  let cards = Array.from(document.querySelectorAll(".card"));
+  let cardsFiltered;
+  document.getElementById("noresults").textContent = "";
 
-            var search = this.value;
-            if (!mobileWindow.matches) {
-              cards.forEach(el => {el.style.display = "block";})
-            }
-            else {
-              cards.forEach(el => {el.style.display = "inline-block";})
-            }
-            cardsFiltered = cards.filter((item) => !item.textContent.includes(search));
-            cardsFiltered.forEach(el => {el.style.display = "none";})
-            var bounds = new mapboxgl.LngLatBounds();
-            let filteredRecords;
+  // Remove popups & reset scrolling on mobile
 
-            if (this.options[this.selectedIndex].text.includes("Tipo")) {
-                map.setFilter('lx', ['==', ['get', 'area'], search]);
-                filteredRecords = records.features.filter((item) => item.properties.area.includes(search));
-                if (filteredRecords.length > 0) {
-                  filteredRecords.forEach (feature => bounds.extend(feature.geometry.coordinates))
-                  map.fitBounds(bounds, {padding: 50});
-                }
-            }
-            else {
-                map.setFilter('lx', ['==', ['get', 'freg_descricao'], search]);
-                filteredRecords = records.features.filter((item) => item.properties.freg_descricao.includes(search));
-                if (filteredRecords.length > 0) {
-                  filteredRecords.forEach (feature => bounds.extend(feature.geometry.coordinates))
-                  map.fitBounds(bounds, {padding: 50});
-                }
-            }
-            if (cardsFiltered.length == 500) {
-                document.getElementById("empty").textContent = "Sem resultados 😥";    
-            }
-            var popUps = document.getElementsByClassName('mapboxgl-popup');
-            if (popUps[0]) {popUps[0].remove()};
-            var listings = document.getElementById("listings");
-            if (mobileWindow.matches) {
-              listings.scrollTo({ left: 0, behavior: 'smooth' });
-            }
+  var popUps = document.getElementsByClassName('mapboxgl-popup');
+  if (popUps[0]) {popUps[0].remove()};
+  switchActives();
+
+  if (picker.value != "Filtrar") { 
+
+    var listings = document.getElementById("listings");
+    if (mobileWindow.matches) {
+      listings.scrollTo({ left: 0, behavior: 'smooth' });
+    }
+
+    // console.log("No filter. Filtering..") Filtering cards first
+
+    var search = picker.value;
+    cards.forEach(el => {el.style.display = "block";})
+    cardsFiltered = cards.filter((item) => !item.textContent.includes(search));
+    cardsFiltered.forEach(el => {el.style.display = "none";})
+
+    // Preparing bounds variable
+
+    var bounds = new mapboxgl.LngLatBounds();
+    let filteredRecords = moreRecords.features;
+
+    if (cardsFiltered.length == cards.length) { // Show no results
+      document.getElementById("noresults").textContent = "Sem resultados 😥";    
+    }
+
+    if (picker.options[picker.selectedIndex].text.includes("Tipo")) {
+
+        // console.log("Applying type filter") Type filter & bounds
+        map.setFilter('lx', ['==', ['get', 'area'], search]);
+        filteredRecords = moreRecords.features.filter((item) => item.properties.area.includes(search));
+
+    }
+    else {
+        // console.log("Applying area filter") Area filter & bounds
+        if(search.includes("Benfica") && !search.includes("Domingos")) {
+          map.setFilter('lx', ['==', ['get', 'geo_freguesia_id'], "109"]); 
+          filteredRecords = moreRecords.features.filter((item) => item.properties.geo_freguesia_id.includes("109"));  
         }
         else {
-            if (!mobileWindow.matches) {
-              cards.forEach(el => {el.style.display = "block";})
-            }
-            else {
-              cards.forEach(el => {el.style.display = "inline-block";})
-            }
-            
-            map.setFilter('lx', null);
-            map.flyTo({
-              center: [-9.162,38.724],
-              zoom: 12.56
-            });
-
+          map.setFilter('lx', ['==', ['get', 'freg_descricao'], search]);
+          filteredRecords = moreRecords.features.filter((item) => item.properties.freg_descricao.includes(search)); 
         }
-  });
+    }
+
+    if (filteredRecords.length > 0) { // Adapt bounds
+      filteredRecords.forEach (feature => bounds.extend(feature.geometry.coordinates))
+      map.fitBounds(bounds, {padding: 50});
+    }
+  }
+  else { // Full reset for position and filters
+
+    map.setFilter('lx', null);
+    if(!mobileWindow.matches) {
+      map.flyTo({
+        center: [-9.162,38.724],
+        zoom: 12.56
+      });
+    }
+  }
 }
 
 // Card-Map Actions
 
-function getTo(currentFeature) {
-  map.flyTo({
-    center: currentFeature.geometry.coordinates,
-    zoom: 15
-  });
+function getTo(currentFeature) { // Go to Point
+  if (map.getZoom() < 15) {
+    map.flyTo({
+      center: currentFeature.geometry.coordinates,
+      zoom: 15
+    })
+  }
 }
 
-function switchActives() {
+function createPopUp(currentFeature) { // Create popups
+  var popUps = document.getElementsByClassName('mapboxgl-popup');
+  if (popUps[0]) {popUps[0].remove()};
+
+  var popup = new mapboxgl.Popup({closeOnClick: false})
+    .setLngLat(currentFeature.geometry.coordinates)
+    .setHTML('<h1>Ocorrência n.º' + currentFeature.properties.id + '</h1><p>"' + currentFeature.properties.descricao + '"</p>')
+    .addTo(map);
+
+  var closeButton = document.getElementsByClassName('mapboxgl-popup-close-button');
+  closeButton[0].addEventListener('click', function() {
+    switchActives();
+  })
+}
+
+function switchActives() { // Switch class on active cards
     var activeItem = document.getElementsByClassName('active');
     if (activeItem[0]) {
       activeItem[0].classList.remove('active');
     }
 }
 
-function createPopUp(currentFeature) {
-    var popUps = document.getElementsByClassName('mapboxgl-popup');
-    if (popUps[0]) {popUps[0].remove()};
-  
-    var popup = new mapboxgl.Popup({ closeOnClick: false })
-      .setLngLat(currentFeature.geometry.coordinates)
-      .setHTML('<h1>Ocorrência n.º' + currentFeature.properties.id + '</h1><p>"' + currentFeature.properties.descricao + '"</p>')
-      .addTo(map);
 
-    var closeButton = document.getElementsByClassName('mapboxgl-popup-close-button');
-    closeButton[0].addEventListener('click', function() {
-        switchActives();
-    })
-}
 
-// Modal
+// Making modal
 
-var modal = document.getElementById("modalInfo"); // Get the modal
-var modalButton = document.getElementById("faq"); // Get the button that opens the modal
-var span = document.getElementsByClassName("close")[0]; // Get the <span> element that closes the modal
+var modal = document.getElementById("modalInfo"); 
+var modalButton = document.getElementById("faq"); 
+var span = document.getElementsByClassName("close")[0];
 
-modalButton.onclick = function() { // When the user clicks on the button, open the modal
+modalButton.onclick = function() {
   modal.style.display = "block";
 }
 
-span.onclick = function() { // When the user clicks on <span> (x), close the modal
+span.onclick = function() { 
   modal.style.display = "none";
 }
-window.onclick = function(event) { // When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) { 
   if (event.target == modal) {
     modal.style.display = "none";
   }
 }
 
-// Mobile Reset Button
+// Header as mobile reset button
 
 if(mobileWindow.matches) {
   var heading = document.getElementById("heading");
@@ -296,7 +363,7 @@ if(mobileWindow.matches) {
   }
 }
 
-// Sidebar Scroll to Top
+// Sidebar scroll to top
 
 const listings = document.getElementById('listings');
 const scrollToTopButton = document.getElementById('scrollTop');
