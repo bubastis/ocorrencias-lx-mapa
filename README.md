@@ -1,6 +1,6 @@
-![App Preview](preview.png)
+![](screenshot.png)
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/ff1e69c1-aed1-455c-8400-a49839964fb2/deploy-status)](https://app.netlify.com/sites/ocorrencias-lx/deploys) ![occo](https://github.com/bubastis/ocorrencias-lx/workflows/occo/badge.svg?event=schedule)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/df39e2a3-5926-415b-8622-fcdcf7cade81/deploy-status)](https://app.netlify.com/sites/ocorrencias-lx-mapa/deploys)
 
 ## Na Minha Rua V2 🇵🇹
 
