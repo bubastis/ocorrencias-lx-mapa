@@ -103,6 +103,7 @@ select {
     cursor: pointer;
     font-size: .9rem;
     width: calc(50% - .5rem);
+    color: black;
 }
 .card h2 {
     font-size: 1.1rem;
@@ -331,7 +332,7 @@ canvas {
         width: 100%;
         height: auto;
         position: relative;
-    } 
+    }
     #header {
         cursor: pointer;
     } 
@@ -364,7 +365,7 @@ canvas {
         flex-wrap: nowrap;
         padding: .5rem;
         min-height: 25%;
-    } 
+    }
     #listings:before {
         box-shadow: inset -25px 0px 10px -10px #000000d1;
         width: 40px;
@@ -428,6 +429,10 @@ canvas {
         position: relative;
         left: 0;
         top: 0;
+    }
+    #map:before {
+        content: 'Loading..';
+        color: white;
     }
     .mapboxgl-popup-content {
         min-width: auto;

@@ -3,6 +3,10 @@ let moreRecords = {};
 let offset = 0;
 let hover = false;
 
+const listings = document.getElementById('listings');
+const picker = document.getElementById("picker");
+const scrollToTopButton = document.getElementById('scrollTop');
+
 // Initialize map
 
 const mobileWindow = window.matchMedia("(max-width: 414px)");
@@ -43,78 +47,78 @@ fetchData().then(records => {
 
 function buildMap(moreRecords) {
 
-    if (!mobileWindow.matches) {
-      map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-      map.addControl(new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true
+  if (!mobileWindow.matches) {
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    map.addControl(new mapboxgl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true
+      },
+        trackUserLocation: true,
+        showUserLocation: true,
+        showAccuracyCircle: true
+      }),
+      'top-right');
+  };
+
+
+  map.addSource('lx-arcgis', {
+    'type': 'geojson',
+    'data': moreRecords
+  });
+
+  map.addLayer({
+    'id': 'lx',
+    'type': 'circle',
+    'source': 'lx-arcgis',
+    'paint': {
+        'circle-radius': {
+          stops: [[11, 3], [12.5, 3], [16, 10]]
         },
-          trackUserLocation: true,
-          showUserLocation: true,
-          showAccuracyCircle: true
-        }),
-        'top-right');
-    };
-
-  
-    map.addSource('lx-arcgis', {
-      'type': 'geojson',
-      'data': moreRecords
-    });
-
-    map.addLayer({
-      'id': 'lx',
-      'type': 'circle',
-      'source': 'lx-arcgis',
-      'paint': {
-          'circle-radius': {
-            stops: [[11, 3], [12.5, 3], [16, 10]]
-          },
-          'circle-color': ["match",
-          ["get", "state"],
-          "Resolvido",
-          "#28a745",
-          "Em análise",
-          "#35aedc",
-          "Em execução",
-          "#ffc105",
-          "Registado para Resolução",
-          "#ff7907",
-          "#ffffff"
-          ],
-          'circle-stroke-color': '#202628',
-          'circle-stroke-width': 1,
-          'circle-opacity': 1
-        }
-    })
-
-    map.on('mouseenter', 'lx', function(e) {
-      map.getCanvas().style.cursor = 'pointer';
-    });
-
-    map.on('mouseleave', 'lx', function(e) {
-      map.getCanvas().style.cursor = '';
-    })
-
-    map.on('click', function(e) {
-
-      var features = map.queryRenderedFeatures(e.point, {layers: ['lx']});
-
-      if (features.length) {
-        var clickedPoint = features[0];
-        getTo(clickedPoint)
-        createPopUp(clickedPoint);
-        switchActives();
-        var listing = document.getElementById('listing-' + clickedPoint.properties.id);
-        listing.classList.add('active');
-        listing.scrollIntoView({behavior: 'smooth'});
+        'circle-color': ["match",
+        ["get", "state"],
+        "Resolvido",
+        "#28a745",
+        "Em análise",
+        "#35aedc",
+        "Em execução",
+        "#ffc105",
+        "Registado para Resolução",
+        "#ff7907",
+        "#ffffff"
+        ],
+        'circle-stroke-color': '#202628',
+        'circle-stroke-width': 1,
+        'circle-opacity': 1
       }
-      else {
-        var popUps = document.getElementsByClassName('mapboxgl-popup');
-        if (popUps[0]) {popUps[0].remove()};
-        switchActives();
-      }
-    });
+  })
+
+  map.on('mouseenter', 'lx', function(e) {
+    map.getCanvas().style.cursor = 'pointer';
+  });
+
+  map.on('mouseleave', 'lx', function(e) {
+    map.getCanvas().style.cursor = '';
+  })
+
+  map.on('click', function(e) {
+
+    var features = map.queryRenderedFeatures(e.point, {layers: ['lx']});
+
+    if (features.length) {
+      var clickedPoint = features[0];
+      getTo(clickedPoint)
+      createPopUp(clickedPoint);
+      switchActives();
+      var listing = document.getElementById('listing-' + clickedPoint.properties.id);
+      listing.classList.add('active');
+      listing.scrollIntoView({behavior: 'smooth'});
+    }
+    else {
+      var popUps = document.getElementsByClassName('mapboxgl-popup');
+      if (popUps[0]) {popUps[0].remove()};
+      switchActives();
+    }
+  });
 }
 
 function buildListCards(records) {
@@ -122,8 +126,6 @@ function buildListCards(records) {
   records.features.forEach(function(el){
 
     var prop = el.properties;
-
-    var listings = document.getElementById('listings');
     var listing = listings.appendChild(document.createElement('div'));
 
     listing.id = "listing-" + prop.id;
@@ -157,22 +159,20 @@ function buildListCards(records) {
 
         if(this.classList.contains('active')) {
           switchActives();
-          if(document.getElementById("picker").value == "Filtrar") {
+          if(picker.value == "Filtrar") {
             map.flyTo({
               center: [-9.162,38.724],
               zoom: 12.56
             });
           }
           var popup = document.getElementsByClassName('mapboxgl-popup');
-          if ( popup.length ) {
-              popup[0].remove();
-          }
+          if (popup.length) {popup[0].remove();}
         }
         else {
-            getTo(el);
-            switchActives();
-            this.classList.add('active');
-            createPopUp(el);
+          getTo(el);
+          switchActives();
+          this.classList.add('active');
+          createPopUp(el);
         }
     })
   })
@@ -211,7 +211,6 @@ function buildListCards(records) {
   })
 }
 
-const picker = document.getElementById("picker");
 picker.addEventListener('change', function(e) {
   filterCardsAndMap(moreRecords)
 })
@@ -280,24 +279,20 @@ function filterCardsAndMap() {
   else { // Full reset for position and filters
 
     map.setFilter('lx', null);
-    if(!mobileWindow.matches) {
       map.flyTo({
-        center: [-9.162,38.724],
-        zoom: 12.56
+        center: newCenter,
+        zoom: newZoom
       });
-    }
   }
 }
 
 // Card-Map Actions
 
 function getTo(currentFeature) { // Go to Point
-  if (map.getZoom() < 15) {
     map.flyTo({
       center: currentFeature.geometry.coordinates,
       zoom: 15
     })
-  }
 }
 
 function createPopUp(currentFeature) { // Create popups
@@ -364,9 +359,6 @@ if(mobileWindow.matches) {
 }
 
 // Sidebar scroll to top
-
-const listings = document.getElementById('listings');
-const scrollToTopButton = document.getElementById('scrollTop');
 
 const scrollFunc = () => {
 
