@@ -100,7 +100,7 @@ function buildMap(moreRecords) {
     map.getCanvas().style.cursor = '';
   })
 
-  map.on('click', function(e) {
+  map.on('mousedown', function(e) {
 
     var features = map.queryRenderedFeatures(e.point, {layers: ['lx']});
 

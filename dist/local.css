@@ -431,11 +431,14 @@ canvas {
         top: 0;
     }
     #map:before {
-        content: 'Loading..';
+        content: 'A carregar..';
         color: white;
+        position: absolute;
+        left: 1rem;
+        top: .5rem;
     }
     .mapboxgl-popup-content {
-        min-width: auto;
+        min-width: 200px;
     }
     .mapboxgl-popup-close-button {
         font-size: 1rem;
