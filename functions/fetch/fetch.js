@@ -10,7 +10,7 @@ exports.handler = async function(event, context) {
         'outFields=id%2Cnumero%2Crequerente%2Cemail%2Clocal%2Creferencia%2Cdescricao%2Ctipo%2Carea%2Cfreg_descricao%2Cstate%2Cgeo_freguesia_id&' +
         'orderByFields=id+DESC&'+
         'resultRecordCount=500&'+
-        (offset != 0 ? "resultOffset=" + offset + "&" : null ) +
+        'resultOffset=500&'
         'f=geojson')
 
     if (!response.ok) {
