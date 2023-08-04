@@ -5,9 +5,9 @@ exports.handler = async function(event, context) {
     offset = event.queryStringParameters.offset;
 
     const response = await fetch(
-      'https://gisapps.cm-lisboa.pt/arcgisapps/rest/services/GOPI_Maps_Secure/NaMinhaRuaRead_PROD/MapServer/0/query?' +
+      'https://naminharualx.cm-lisboa.pt/gopiv2/proxy.jsp?https://gisapps.cm-lisboa.pt/arcgisapps/rest/services/GOPI_Maps_Secure/NaMinhaRuaRead_PROD/MapServer/0/query' +
         'where=1%3D1&' + 
-        'outFields=id%2Cnumero%2Crequerente%2Cemail%2Clocal%2Creferencia%2Cdescricao%2Ctipo%2Carea%2Cfreg_descricao%2Cstate%2Cgeo_freguesia_id&' + 
+       'outFields=text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=id%2Cnumero%2Crequerente%2Cemail%2Clocal%2Creferencia%2Cdescricao%2Ctipo%2Carea%2Cfreg_descricao%2Cstate&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=id+DESC&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=1000&f=geojson' + 
         'orderByFields=id+DESC&'+
         'resultRecordCount=500&'+ 
         (offset != 0 ? "resultOffset=" + offset + "&" : null ) + 
